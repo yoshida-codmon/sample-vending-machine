@@ -8,6 +8,7 @@ use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\Error\NotSupportedMoneyTypeException;
 use Domain\Value\Money\CashType;
 use Domain\Value\Money\ICashType;
+use InvalidArgumentException;
 use Traversable;
 
 abstract class AbstractCashCollection implements ICashCollection
@@ -25,6 +26,11 @@ abstract class AbstractCashCollection implements ICashCollection
         $types = $this->validTypes();
         foreach ($coinCountMap as $money => $count) {
             $type = CashType::valueOf($money);
+            if ($count < 0) {
+                throw new InvalidArgumentException(
+                    "The number of '$money' units must be greater than or equal to 0."
+                );
+            }
             if (in_array($type, $types)) {
                 $this->collection[$money] = $count;
             } else {
