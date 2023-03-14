@@ -3,6 +3,9 @@
         "phpunit/phpunit": "^9.5",
         "friendsofphp/php-cs-fixer": "^3.13"
     },
+    "require": {
+      "php-ds/php-ds": "^1.4"
+    },
     "scripts": {
         "test": [
           "vendor/bin/phpunit ./tests"
@@ -22,7 +25,7 @@
     },
     "autoload": {
       "psr-4": {
-          "\\": "src/"
+          "": "src/"
       }
-  }
+    }
 }
