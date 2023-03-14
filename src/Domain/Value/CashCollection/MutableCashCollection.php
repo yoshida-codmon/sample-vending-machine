@@ -3,13 +3,8 @@ declare(strict_types=1);
 
 namespace Domain\Value\CashCollection;
 
-use ArrayIterator;
-use Domain\Value\CashType\CashType;
-use Domain\Value\CashType\ICashType;
 use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\Error\NotSupportedCashTypeException;
-use InvalidArgumentException;
-use Traversable;
 
 class MutableCashCollection extends CashCollection implements IMutableCashCollection
 {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Domain\Model;
 
 use Domain\Value\CashCollection\CashCollection;
-use Domain\Value\CashType\BillType;
-use Domain\Value\CashType\CoinType;
 
 class ChangeCash extends CashCollection
 {

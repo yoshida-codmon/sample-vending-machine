@@ -3,7 +3,6 @@
 namespace UseCase\Purchase;
 
 use Domain\Model\ChangeCash;
-use Domain\Model\ReceiveCash;
 use Domain\Repository\CoinInventoryRepository;
 use Domain\Repository\ProductStockRepository;
 use Domain\Service\PurchaseService;
@@ -15,9 +14,9 @@ use Domain\Value\Error\OutOfStockException;
 final class PurchaseUseCase
 {
     public function __construct(
-        private readonly ProductStockRepository $productStockRepository,
+        private readonly ProductStockRepository  $productStockRepository,
         private readonly CoinInventoryRepository $moneyInventoryRepository,
-        private readonly PurchaseService $purchaseService,
+        private readonly PurchaseService         $purchaseService,
     )
     {
     }

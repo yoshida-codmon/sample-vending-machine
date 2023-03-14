@@ -50,7 +50,7 @@ class Main
     public static function run(array $vendingMachineCoins, array $userInput): string
     {
         // 受け取ったお金、商品
-        [ 'coins' => $coins, 'menu' => $menu ] = $userInput;
+        ['coins' => $coins, 'menu' => $menu] = $userInput;
 
         // 商品および在庫
         $stocks = new ProductStocks();

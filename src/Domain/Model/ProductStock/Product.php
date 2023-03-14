@@ -7,7 +7,7 @@ class Product
 {
     public function __construct(
         public readonly ProductId $id,
-        public readonly int $price
+        public readonly int       $price
     )
     {
     }

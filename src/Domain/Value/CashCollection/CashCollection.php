@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Domain\Value\CashCollection;
 
 use ArrayIterator;
-use Domain\Value\Error\NotSupportedCashTypeException;
 use Domain\Value\CashType\CashType;
 use Domain\Value\CashType\ICashType;
+use Domain\Value\Error\NotSupportedCashTypeException;
 use InvalidArgumentException;
 use Traversable;
 
@@ -63,23 +63,9 @@ class CashCollection implements ICashCollection
     {
         $collection = $this->collection;
         $types = array_keys($collection);
-        return array_reduce($types, function ($paid, $coin) use($collection) {
+        return array_reduce($types, function ($paid, $coin) use ($collection) {
             return $paid + $coin * $collection[$coin];
         }, 0);
-    }
-
-    /**
-     * @return ICashType[]
-     */
-    public function availableTypes(): array
-    {
-        $types = [];
-        foreach ($this->collection as $type => $count) {
-            if ($count > 0) {
-                $types[] = CashType::valueOf($type);
-            }
-        }
-        return $types;
     }
 
     /**
@@ -95,6 +81,20 @@ class CashCollection implements ICashCollection
             }
         }
         return true;
+    }
+
+    /**
+     * @return ICashType[]
+     */
+    public function availableTypes(): array
+    {
+        $types = [];
+        foreach ($this->collection as $type => $count) {
+            if ($count > 0) {
+                $types[] = CashType::valueOf($type);
+            }
+        }
+        return $types;
     }
 
     /**

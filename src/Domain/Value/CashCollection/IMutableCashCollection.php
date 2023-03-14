@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Domain\Value\CashCollection;
 
-use Domain\Value\CashType\ICashType;
 use Domain\Value\Error\MoneyShortageException;
-use IteratorAggregate;
 
 interface IMutableCashCollection extends ICashCollection
 {

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Domain\Model\ProductStock;
 
-use Core\IEntity;
 use Core\GenericIEntities;
+use Core\IEntity;
 use Exception;
 use Generator;
 use Traversable;

@@ -17,5 +17,5 @@ interface IEntity
      * @param T|null $other
      * @return bool
      */
-    public function equals(mixed $other) : bool;
+    public function equals(mixed $other): bool;
 }

@@ -46,20 +46,20 @@ class GenericIEntities implements IEntities
     }
 
     /**
+     * @return Generator<TKey>
+     */
+    public function keys(): Generator
+    {
+        return $this->map->keys()->getIterator();
+    }
+
+    /**
      * @return Traversable<TKey, TEntity>
      * @throws Exception
      */
     public function getIterator(): Traversable
     {
         return $this->map->getIterator();
-    }
-
-    /**
-     * @return Generator<TKey>
-     */
-    public function keys(): Generator
-    {
-        return $this->map->keys()->getIterator();
     }
 
     /**

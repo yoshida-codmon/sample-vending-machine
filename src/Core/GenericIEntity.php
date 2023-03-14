@@ -21,19 +21,19 @@ class GenericIEntity implements IEntity, Hashable
     }
 
     /**
+     * @inheritDoc
+     */
+    public function equals(mixed $obj): bool
+    {
+        return $obj !== null && $this->getId()->equals($obj->getId());
+    }
+
+    /**
      * @return T
      */
     public function getId(): IIdentity
     {
         return $this->id;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function equals(mixed $obj) : bool
-    {
-        return $obj !== null && $this->getId()->equals($obj->getId());
     }
 
     public function hash()

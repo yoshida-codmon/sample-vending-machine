@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Domain\Value\CashCollection;
 
-use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\CashType\ICashType;
 use IteratorAggregate;
 

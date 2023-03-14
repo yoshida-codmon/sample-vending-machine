@@ -18,7 +18,7 @@ use UseCase\Purchase\PurchaseUseCase;
 class TextController
 {
     public function __construct(
-        private readonly ProductStockRepository $productStockRepository,
+        private readonly ProductStockRepository  $productStockRepository,
         private readonly CoinInventoryRepository $coinInventoryRepository,
     )
     {

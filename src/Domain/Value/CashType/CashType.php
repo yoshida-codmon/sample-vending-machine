@@ -5,7 +5,8 @@ namespace Domain\Value\CashType;
 
 use Domain\Value\Error\NotSupportedCashTypeException;
 
-class CashType {
+class CashType
+{
     public static function valueOf(int $value): ICashType
     {
         $cashType = CoinType::tryFrom($value) ?? BillType::tryFrom($value);

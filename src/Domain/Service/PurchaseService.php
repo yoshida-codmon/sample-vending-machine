@@ -84,7 +84,9 @@ class PurchaseService
 
         // 釣り銭計算のために額面で降順ソート
         $coinTypes = array_map(
-            function($type) { return $type->value(); },
+            function ($type) {
+                return $type->value();
+            },
             $inventory->availableTypes()
         );
         arsort($coinTypes);
@@ -94,7 +96,7 @@ class PurchaseService
         $change = $amountPaid - $price;
         if ($change > 0) {
             foreach ($inventory as $coinType => $coinCount) {
-                $count = (int) floor($change / $coinType);
+                $count = (int)floor($change / $coinType);
                 $count = min($coinCount, $count);
                 if ($count > 0) {
                     $changeCoins[$coinType] = $count;
