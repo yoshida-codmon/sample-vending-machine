@@ -49,7 +49,7 @@ class PurchaseService
         $cash->add($coinInventory);
 
         // お釣り計算 (釣り銭不足は例外になる)
-        $change = $this->calculateChange($price, $paid, $cash, CoinCollection::class);
+        $change = $this->calculateChange($price, $paid, $cash);
 
         // 在庫減少
         $stock->decrease();
