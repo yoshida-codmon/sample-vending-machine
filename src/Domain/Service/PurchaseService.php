@@ -6,6 +6,7 @@ namespace Domain\Service;
 use Domain\Model\CoinInventory;
 use Domain\Model\ProductStock\ProductId;
 use Domain\Model\ProductStock\ProductStocks;
+use Domain\Value\CashCollection\MutableCashCollection;
 use Domain\Value\Error\InsufficientPaidAmountException;
 use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\CashCollection\CashCollection;
@@ -44,7 +45,7 @@ class PurchaseService
         $price = $stock->product->price;
 
         // 投入されたお金もお釣り用に使えるため、手持ちとしては合算しておく
-        $cash = new CashCollection();
+        $cash = new MutableCashCollection();
         $cash->add($paid);
         $cash->add($coinInventory);
 

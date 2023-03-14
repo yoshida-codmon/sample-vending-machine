@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Value\Money;
+namespace Domain\Value\CashType;
 
-use Domain\Value\Error\NotSupportedMoneyTypeException;
+use Domain\Value\Error\NotSupportedCashTypeException;
 
 class CashType {
     public static function valueOf(int $value): ICashType
     {
-        $moneyType = CoinType::tryFrom($value) ?? BillType::tryFrom($value);
-        if ($moneyType) {
-            return $moneyType;
+        $cashType = CoinType::tryFrom($value) ?? BillType::tryFrom($value);
+        if ($cashType) {
+            return $cashType;
         }
 
-        throw new NotSupportedMoneyTypeException();
+        throw new NotSupportedCashTypeException();
     }
 
     /**

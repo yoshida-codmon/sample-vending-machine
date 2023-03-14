@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Domain\Model;
 
-use Domain\Value\CashCollection\CoinCollection;
+use Domain\Value\CashCollection\MutableCoinCollection;
 
-class CoinInventory extends CoinCollection
+class CoinInventory extends MutableCoinCollection
 {
 }

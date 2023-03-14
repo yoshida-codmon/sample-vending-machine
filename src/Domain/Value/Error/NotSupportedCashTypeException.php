@@ -5,6 +5,6 @@ namespace Domain\Value\Error;
 
 use RuntimeException;
 
-class NotSupportedMoneyTypeException extends RuntimeException
+class NotSupportedCashTypeException extends RuntimeException
 {
 }

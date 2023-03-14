@@ -5,7 +5,7 @@ namespace Domain\Value\CashCollection;
 
 use Domain\Value\CashType\CoinType;
 
-class CoinCollection extends CashCollection
+class MutableCoinCollection extends MutableCashCollection
 {
     /**
      * @inheritDoc
