@@ -24,4 +24,10 @@ interface ICashCollection extends IteratorAggregate
      * @return ICashType[]
      */
     public function availableTypes(): array;
+
+    /**
+     * @param ICashCollection $cash
+     * @return bool
+     */
+    public function isAcceptable(ICashCollection $cash): bool;
 }

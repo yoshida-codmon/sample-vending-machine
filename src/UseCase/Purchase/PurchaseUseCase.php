@@ -1,8 +1,9 @@
 <?php
 
-namespace App\UseCase;
+namespace UseCase\Purchase;
 
-use Domain\Model\ProductStock\ProductId;
+use Domain\Model\ChangeCash;
+use Domain\Model\ReceiveCash;
 use Domain\Repository\CoinInventoryRepository;
 use Domain\Repository\ProductStockRepository;
 use Domain\Service\PurchaseService;
@@ -10,28 +11,26 @@ use Domain\Value\Error\InsufficientPaidAmountException;
 use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\Error\NotFoundProductException;
 use Domain\Value\Error\OutOfStockException;
-use Domain\Value\CashCollection\CoinCollection;
-use Domain\Value\CashCollection\ICashCollection;
 
-final class UseCase
+final class PurchaseUseCase
 {
     public function __construct(
         private readonly ProductStockRepository $productStockRepository,
-        private readonly CoinInventoryRepository $moneyInventoryRepository
+        private readonly CoinInventoryRepository $moneyInventoryRepository,
+        private readonly PurchaseService $purchaseService,
     )
     {
     }
 
     /**
-     * @param string $product 購入する商品(商品ID文字列)
-     * @param ICashCollection $paid 支払ったコイン構成
-     * @return ICashCollection お釣りの硬貨
+     * @param PurchaseInput $input
+     * @return ChangeCash お釣りの硬貨
      * @throws NotFoundProductException
      * @throws OutOfStockException
      * @throws InsufficientPaidAmountException
      * @throws MoneyShortageException
      */
-    public function purchase(string $product, ICashCollection $paid): ICashCollection
+    public function handle(PurchaseInput $input): ChangeCash
     {
         // 商品在庫
         $stocks = $this->productStockRepository->load();
@@ -40,7 +39,14 @@ final class UseCase
         $coinInventory = $this->moneyInventoryRepository->load();
 
         // 購入処理
-        $calculator = new PurchaseService();
-        return $calculator->purchase($product, $paid, $stocks, $coinInventory);
+        $change = $this->purchaseService->purchase(
+            $input->product, $input->receiveCash, $stocks, $coinInventory
+        );
+
+        // 保存する
+        $this->productStockRepository->save($stocks);
+        $this->moneyInventoryRepository->save($coinInventory);
+
+        return $change;
     }
 }

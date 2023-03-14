@@ -15,7 +15,9 @@ class MutableCashCollection extends CashCollection implements IMutableCashCollec
 {
     public function add(ICashCollection $cash): void
     {
-        $this->validate($cash);
+        if (!$this->isAcceptable($cash)) {
+            throw new NotSupportedCashTypeException();
+        }
 
         foreach ($cash as $type => $count) {
             if (array_key_exists($type, $this->collection)) {
@@ -28,12 +30,18 @@ class MutableCashCollection extends CashCollection implements IMutableCashCollec
 
     public function subtract(mixed $cash): void
     {
-        $this->validate($cash);
+        if (!$this->isAcceptable($cash)) {
+            throw new NotSupportedCashTypeException();
+        }
+
         if (!$this->includes($cash)) {
             throw new MoneyShortageException();
         }
         foreach ($cash as $type => $count) {
             $this->collection[$type] -= $count;
+            if ($this->collection[$type] === 0) {
+                unset($this->collection[$type]);
+            }
         }
     }
 }

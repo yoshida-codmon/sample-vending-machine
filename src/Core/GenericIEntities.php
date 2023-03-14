@@ -61,4 +61,12 @@ class GenericIEntities implements IEntities
     {
         return $this->map->keys()->getIterator();
     }
+
+    /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return $this->map->count();
+    }
 }

@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-use App\UseCase\UseCase;
 use Domain\Model\CoinInventory;
 use Domain\Model\ProductStock\ProductStock;
 use Domain\Model\ProductStock\ProductStocks;
-use Domain\Value\Error\InsufficientPaidAmountException;
-use Domain\Value\Error\MoneyShortageException;
-use Domain\Value\Error\NotFoundProductException;
-use Domain\Value\Error\OutOfStockException;
-use Domain\Value\CashCollection\CashCollection;
 use Infrastructure\Repository\InMemoryCoinInventoryRepository;
 use Infrastructure\Repository\InMemoryProductStockRepository;
+use Presentation\TextController;
 
 
 /**
@@ -57,11 +52,6 @@ class Main
         // 受け取ったお金、商品
         [ 'coins' => $coins, 'menu' => $menu ] = $userInput;
 
-        // お釣り用のお金
-        $coinInventory = new CoinInventory($vendingMachineCoins);
-        $coinInventoryRepository = new InMemoryCoinInventoryRepository();
-        $coinInventoryRepository->save($coinInventory);
-
         // 商品および在庫
         $stocks = new ProductStocks();
         $stocks->add(ProductStock::create('cola', 120, 30));
@@ -70,33 +60,15 @@ class Main
         $productStockRepository = new InMemoryProductStockRepository();
         $productStockRepository->save($stocks);
 
-        // ユースケース
-        $useCase = new UseCase($productStockRepository, $coinInventoryRepository);
+        // お釣り用のお金
+        $coinInventory = new CoinInventory($vendingMachineCoins);
+        $coinInventoryRepository = new InMemoryCoinInventoryRepository();
+        $coinInventoryRepository->save($coinInventory);
 
-        // 受け取ったお金
-        $paid = new CashCollection($coins);
-
-        // 購入・お釣りの計算
-        try {
-            $changeCoins = $useCase->purchase($menu, $paid);
-            if ($changeCoins->sum() === 0) {
-                return 'nochange';
-            }
-            // 出力の書式をフォーマットする
-            $results = [];
-            foreach ($changeCoins as $coin => $count) {
-                $results[] = "$coin $count";
-            }
-            return implode(' ', $results);
-
-        } catch (NotFoundProductException $e) {
-            return "error: Not found product in the menu list. [$menu]";
-        } catch (OutOfStockException $e) {
-            return "error: Out of stock. [$menu]";
-        } catch (InsufficientPaidAmountException $e) {
-            return 'error: Insufficient paid amount.';
-        } catch (MoneyShortageException $e) {
-            return 'error: Shortage of cash.';
-        }
+        $controller = new TextController(
+            $productStockRepository,
+            $coinInventoryRepository
+        );
+        return $controller->run($coins, $menu);
     }
 }

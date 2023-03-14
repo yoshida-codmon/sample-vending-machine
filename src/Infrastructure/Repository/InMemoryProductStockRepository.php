@@ -23,4 +23,9 @@ class InMemoryProductStockRepository implements ProductStockRepository
     {
         $this->values = $stocks;
     }
+
+    public function count(): int
+    {
+        return $this->values->count();
+    }
 }

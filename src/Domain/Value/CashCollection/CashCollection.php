@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Domain\Value\CashCollection;
 
 use ArrayIterator;
-use Domain\Value\Error\MoneyShortageException;
 use Domain\Value\Error\NotSupportedCashTypeException;
 use Domain\Value\CashType\CashType;
 use Domain\Value\CashType\ICashType;
@@ -19,15 +18,17 @@ class CashCollection implements ICashCollection
     protected array $collection = [];
 
     /**
-     * @param $coinCountMap array
+     * @param $coinCountMap array|ICashCollection
+     * @throws InvalidArgumentException
+     * @throws NotSupportedCashTypeException
      */
-    public function __construct(array $coinCountMap = [])
+    public function __construct(array|ICashCollection $coinCountMap = [])
     {
         $types = $this->validTypes();
 
         foreach ($coinCountMap as $cashType => $count) {
             $type = CashType::valueOf($cashType);
-            if ($count < 0) {
+            if ($count < 0 || !is_int($count)) {
                 throw new InvalidArgumentException(
                     "The number of '$cashType' units must be greater than or equal to 0."
                 );
@@ -46,17 +47,6 @@ class CashCollection implements ICashCollection
     protected function validTypes(): array
     {
         return CashType::cases();
-    }
-
-    protected function validate(ICashCollection $cash): void
-    {
-        $validTypes = $this->validTypes();
-        $types = $cash->availableTypes();
-        foreach ($types as $type) {
-            if (!in_array($type, $validTypes)) {
-                throw new NotSupportedCashTypeException();
-            }
-        }
     }
 
     public function includes(ICashCollection $money): bool
@@ -90,6 +80,21 @@ class CashCollection implements ICashCollection
             }
         }
         return $types;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAcceptable(ICashCollection $cash): bool
+    {
+        $validTypes = $this->validTypes();
+        $types = $cash->availableTypes();
+        foreach ($types as $type) {
+            if (!in_array($type, $validTypes)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
