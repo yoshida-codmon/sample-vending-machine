@@ -2,6 +2,19 @@
 
 declare(strict_types=1);
 
+use App\UseCase\UseCase;
+use Domain\Model\CoinInventory;
+use Domain\Model\ProductStock\ProductStock;
+use Domain\Model\ProductStock\ProductStocks;
+use Domain\Value\Error\InsufficientPaidAmountException;
+use Domain\Value\Error\MoneyShortageException;
+use Domain\Value\Error\NotFoundProductException;
+use Domain\Value\Error\OutOfStockException;
+use Domain\Value\CashCollection\CashCollection;
+use Infrastructure\Repository\InMemoryCoinInventoryRepository;
+use Infrastructure\Repository\InMemoryProductStockRepository;
+
+
 /**
  * メインクラス。
  * 原則ここにロジックは書かないこと。
@@ -41,66 +54,49 @@ class Main
      */
     public static function run(array $vendingMachineCoins, array $userInput): string
     {
-        // - お釣り用のお金
-        $moneyInventory = [];
-        foreach ($vendingMachineCoins as $key => $value) {
-            $moneyInventory[(int)$key] = $value;
-        }
-        $coins = $userInput['coins'];
-        $menu = $userInput['menu'];
+        // 受け取ったお金、商品
+        [ 'coins' => $coins, 'menu' => $menu ] = $userInput;
 
-        // 料金表から商品の料金を検索する
-        // - 料金表
-        $menuPriceMap = [
-            'cola' => 120,
-            'coffee' => 150,
-            'energy_drink' => 210
-        ];
+        // お釣り用のお金
+        $coinInventory = new CoinInventory($vendingMachineCoins);
+        $coinInventoryRepository = new InMemoryCoinInventoryRepository();
+        $coinInventoryRepository->save($coinInventory);
 
-        if (!array_key_exists($menu, $menuPriceMap)) {
-            return "error: Not found in the menu list. [$menu]";
-        }
-        $price = $menuPriceMap[$menu];
+        // 商品および在庫
+        $stocks = new ProductStocks();
+        $stocks->add(ProductStock::create('cola', 120, 30));
+        $stocks->add(ProductStock::create('coffee', 150, 30));
+        $stocks->add(ProductStock::create('energy_drink', 210, 30));
+        $productStockRepository = new InMemoryProductStockRepository();
+        $productStockRepository->save($stocks);
 
-        // お釣りを計算する
-        // - 投入金額の合計額を計算
-        $paid = array_reduce(array_keys($coins), function ($paid, $coin) use($coins) {
-            return $paid + (int) $coin * $coins[$coin];
-        }, 0);
+        // ユースケース
+        $useCase = new UseCase($productStockRepository, $coinInventoryRepository);
 
-        // - 金額不足のエラーチェック
-        if ($paid < $price) {
-            return "error: Insufficient paid amount";
-        }
+        // 受け取ったお金
+        $paid = new CashCollection($coins);
 
-        $coinTypes = array_keys($moneyInventory);
-        arsort($coinTypes);
-
-        $change = $paid - $price;
-        if ($change === 0) {
-            return 'nochange';
-        }
-
-        $changeCoins = [];
-        foreach ($coinTypes as $coinType) {
-            $count = (int) floor($change / $coinType);
-            $count = min($moneyInventory[$coinType], $count);
-            if ($count > 0) {
-                $changeCoins[$coinType] = $count;
-                $change -= $coinType * $count;
+        // 購入・お釣りの計算
+        try {
+            $changeCoins = $useCase->purchase($menu, $paid);
+            if ($changeCoins->sum() === 0) {
+                return 'nochange';
             }
-        }
+            // 出力の書式をフォーマットする
+            $results = [];
+            foreach ($changeCoins as $coin => $count) {
+                $results[] = "$coin $count";
+            }
+            return implode(' ', $results);
 
-        if ($change > 0) {
-            return 'error: Sorry,we dont have any change';
+        } catch (NotFoundProductException $e) {
+            return "error: Not found product in the menu list. [$menu]";
+        } catch (OutOfStockException $e) {
+            return "error: Out of stock. [$menu]";
+        } catch (InsufficientPaidAmountException $e) {
+            return 'error: Insufficient paid amount.';
+        } catch (MoneyShortageException $e) {
+            return 'error: Shortage of cash.';
         }
-
-        // 出力の書式をフォーマットする
-        $results = [];
-        foreach ($changeCoins as $coin => $count) {
-            $results[] = "$coin $count";
-        }
-
-        return implode(' ', $results);
     }
 }
