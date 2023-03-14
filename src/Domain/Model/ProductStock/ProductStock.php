@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Domain\Model\ProductStock;
 
-use Core\IEntity;
 use Core\GenericIEntity;
 use InvalidArgumentException;
 
@@ -33,14 +33,6 @@ class ProductStock extends GenericIEntity
         );
     }
 
-    public function __construct(
-        public readonly Product $product,
-        private int $quantity = 0
-    )
-    {
-        parent::__construct($product->id);
-    }
-
     /**
      * @return int
      */
@@ -54,11 +46,22 @@ class ProductStock extends GenericIEntity
         return $this->quantity <= 0;
     }
 
-    /**
-     * @param int $quantity
-     */
-    public function setQuantity(int $quantity): void
+    public function increase(int $quantity = 1)
     {
-        $this->quantity = $quantity;
+        if ($quantity <= 0) {
+            throw new InvalidArgumentException("The increase quantity must be greater than 0.");
+        }
+        $this->quantity += $quantity;
+    }
+
+    public function decrease(int $quantity = 1)
+    {
+        if ($quantity <= 0) {
+            throw new InvalidArgumentException("The decrease quantity must be greater than 0.");
+        }
+        if ($this->quantity < $quantity) {
+            throw new InvalidArgumentException("The decrease quantity is greater than the amount of stock.");
+        }
+        $this->quantity -= $quantity;
     }
 }
