@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Domain\Model\ProductStock;
 
-use Core\GenericIEntity;
+use Domain\Model\Common\GenericEntity;
 use InvalidArgumentException;
 
 /**
- * @template-extends GenericIEntity<ProductId>
+ * @template-extends GenericEntity<ProductId>
  */
-class ProductStock extends GenericIEntity
+class ProductStock extends GenericEntity
 {
     public function __construct(
         public readonly Product $product,

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Core;
+namespace Domain\Model\Common;
 
 use Ds\Hashable;
 
@@ -9,7 +9,7 @@ use Ds\Hashable;
  * @template T of IIdentity
  * @template-implements IEntity<T>
  */
-class GenericIEntity implements IEntity, Hashable
+class GenericEntity implements IEntity, Hashable
 {
     /**
      * @param IIdentity $id

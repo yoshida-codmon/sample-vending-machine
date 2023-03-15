@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Core;
+namespace Domain\Model\Common;
 
 /**
  * @template T of string|int
  */
-class GenericScalarIIdentity implements IIdentity
+class GenericScalarIdentity implements IIdentity
 {
 
     /**

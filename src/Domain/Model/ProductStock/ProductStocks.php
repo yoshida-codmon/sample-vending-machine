@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace Domain\Model\ProductStock;
 
-use Core\GenericIEntities;
-use Core\IEntity;
+use Domain\Model\Common\GenericEntities;
+use Domain\Model\Common\IEntity;
 use Exception;
 use Generator;
 use Traversable;
 
 /**
- * @template-extends GenericIEntities<ProductStock, ProductId>
+ * @template-extends GenericEntities<ProductStock, ProductId>
  */
-class ProductStocks extends GenericIEntities
+class ProductStocks extends GenericEntities
 {
     /**
      * @param ProductStock $value

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Core;
+namespace Domain\Model\Common;
 
 use Ds\Map;
 use Exception;
@@ -13,7 +13,7 @@ use Traversable;
  * @template TEntity of IEntity
  * @template-implements IEntities<TKey, TEntity>
  */
-class GenericIEntities implements IEntities
+class GenericEntities implements IEntities
 {
     protected Map $map;
 
