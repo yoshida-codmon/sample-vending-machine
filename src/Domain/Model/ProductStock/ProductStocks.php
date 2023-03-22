@@ -10,7 +10,7 @@ use Generator;
 use Traversable;
 
 /**
- * @template-extends GenericEntities<ProductStock, ProductId>
+ * @template-extends GenericEntities<ProductId, ProductStock>
  */
 class ProductStocks extends GenericEntities
 {
