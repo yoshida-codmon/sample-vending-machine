@@ -17,6 +17,8 @@ use UseCase\Purchase\PurchaseUseCase;
 
 class TextController
 {
+    public const RESULT_NO_CHANGE = 'nochange';
+
     public function __construct(
         private readonly ProductStockRepository  $productStockRepository,
         private readonly CoinInventoryRepository $coinInventoryRepository,
@@ -63,7 +65,7 @@ class TextController
     private function formatCoins(ICashCollection $coins): string
     {
         if ($coins->sum() === 0) {
-            return 'nochange';
+            return self::RESULT_NO_CHANGE;
         }
 
         $results = [];
